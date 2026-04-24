@@ -1,5 +1,11 @@
 color: blue
 
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
+
 active:
   enabled: true
   color: blue
