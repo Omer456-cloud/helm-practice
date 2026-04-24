@@ -1,0 +1,18 @@
+frontend:
+  replicaCount: 2
+  image:
+    tag: "latest"
+  service:
+    nodePort: 30002
+
+backend:
+  replicaCount: 2
+
+database:
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "200m"
+      memory: "512Mi"

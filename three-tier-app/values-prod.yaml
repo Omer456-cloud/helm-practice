@@ -1,0 +1,18 @@
+frontend:
+  replicaCount: 3
+  image:
+    tag: "alpine"
+  service:
+    nodePort: 30003
+
+backend:
+  replicaCount: 3
+
+database:
+  resources:
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
