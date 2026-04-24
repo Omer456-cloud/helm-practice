@@ -5,6 +5,9 @@ frontend:
   service:
     nodePort: 30003
 
+active:
+  nodePort: 30093
+
 backend:
   replicaCount: 3
 
