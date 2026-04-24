@@ -1,0 +1,67 @@
+color: blue
+
+active:
+  enabled: true
+  color: blue
+  nodePort: 30090
+  
+frontend:
+  replicaCount: 1
+  image:
+    repository: nginx
+    tag: "alpine"
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 80
+    nodePort: 30080
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+
+backend:
+  replicaCount: 1
+  image:
+    repository: hashicorp/http-echo
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  args:
+    - "-text=Hello from the Backend!"
+    - "-listen=:5678"
+  service:
+    type: ClusterIP
+    port: 5678
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "64Mi"
+    limits:
+      cpu: "100m"
+      memory: "128Mi"
+
+database:
+  image:
+    repository: mysql
+    tag: "8.0"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3306
+  auth:
+    rootPassword: "rootpassword"
+    database: "appdb"
+    username: "appuser"
+    password: "apppassword"
+  storage:
+    size: "1Gi"
+  resources:
+    requests:
+      cpu: "100m"
+      memory: "256Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"

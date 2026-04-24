@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "three-tier-app.fullname" . }}-database
+  labels:
+    {{- include "three-tier-app.labels" . | nindent 4 }}
+    app: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: database
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: database
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: database
+          image: "{{ .Values.database.image.repository }}:{{ .Values.database.image.tag }}"
+          imagePullPolicy: {{ .Values.database.image.pullPolicy }}
+          ports:
+            - name: mysql
+              containerPort: 3306
+              protocol: TCP
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "three-tier-app.fullname" . }}-database-secret
+                  key: root-password
+            - name: MYSQL_DATABASE
+              value: {{ .Values.database.auth.database }}
+            - name: MYSQL_USER
+              value: {{ .Values.database.auth.username }}
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "three-tier-app.fullname" . }}-database-secret
+                  key: db-password
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          resources:
+            {{- toYaml .Values.database.resources | nindent 12 }}
+      volumes:
+        - name: mysql-data
+          persistentVolumeClaim:
+            claimName: {{ include "three-tier-app.fullname" . }}-database-pvc

@@ -1,0 +1,20 @@
+3-Tier Application Deployed Successfully!
+
+Architecture:
+  - Frontend  : Nginx         (NodePort 30080)
+  - Backend   : http-echo     (ClusterIP :5678)
+  - Database  : MySQL 8.0     (ClusterIP :3306)
+
+Access the Frontend:
+  minikube service {{ include "three-tier-app.fullname" . }}-frontend --url
+
+Or manually:
+  export NODE_PORT={{ .Values.frontend.service.nodePort }}
+  export NODE_IP=$(minikube ip)
+  echo "Frontend URL: http://$NODE_IP:$NODE_PORT"
+
+Check all pods are running:
+  kubectl get pods
+
+Check all services:
+  kubectl get svc
